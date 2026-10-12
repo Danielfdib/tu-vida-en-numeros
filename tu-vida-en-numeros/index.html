@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tu vida en números: ¿cuántos días has vivido? | Estudio Raíz</title>
+  <meta name="description" content="Pon tu fecha de nacimiento y descubre cuántos días, horas y latidos llevas vividos, cuántas lunas llenas viste y cuántos km viajaste alrededor del Sol. Gratis.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tu vida en números">
+  <meta property="og:description" content="¿Cuántos días has vivido? ¿Cuántas veces latió tu corazón? Descúbrelo gratis en 5 segundos.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#2f5d3a">
+  <meta name="author" content="Estudio Raíz">
+  <link rel="canonical" href="https://tu-vida-en-numeros.vercel.app/tu-vida-en-numeros/">
+  <link rel="icon" href="../assets/tu-vida-en-numeros.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/raiz.css">
+  <style>
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 560px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+    .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .stat b { display: block; font-size: 1.35rem; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--muted); font-size: .88rem; }
+    .big { text-align: center; padding: 8px 0 16px; }
+    .big .n { font-size: clamp(2.4rem, 11vw, 3.6rem); font-weight: 800; color: var(--accent); letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .big .l { color: var(--muted); }
+    .age { text-align: center; font-size: 1.1rem; margin-bottom: 16px; }
+    .ticker { text-align: center; margin: 16px 0 0; font-variant-numeric: tabular-nums; }
+    .row { display: flex; gap: 10px; align-items: end; }
+    .row > div { flex: 1; }
+    #weeks { width: 100%; height: auto; display: block; margin-top: 8px; }
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-top: 8px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+    .content h2 { font-size: 1.2rem; margin-top: 28px; }
+    .content details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    .content summary { cursor: pointer; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="raiz-header">
+    <div class="wrap">
+      <a class="raiz-logo" href="https://estudio-raiz.vercel.app" target="_blank" rel="noopener">Estudio <span>Raíz</span></a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Tu vida en números</h1>
+      <p>Pon tu fecha de nacimiento y descubre cuántos días, latidos y lunas llenas llevas vividos.</p>
+    </section>
+
+    <form class="card" id="form" novalidate>
+      <div class="row">
+        <div>
+          <label for="nac">Fecha de nacimiento</label>
+          <input type="date" id="nac" required>
+        </div>
+        <button class="btn" type="submit">Calcular</button>
+      </div>
+      <p class="small muted" style="margin:10px 0 0">🔒 Todo se calcula en tu teléfono. No guardamos ni enviamos tu fecha.</p>
+      <p class="small" id="err" role="alert" style="color:var(--accent);margin:8px 0 0"></p>
+    </form>
+
+    <section id="res" class="hidden" aria-live="polite">
+      <div class="card">
+        <div class="big">
+          <div class="n" id="dias">0</div>
+          <div class="l">días vividos</div>
+        </div>
+        <div class="age" id="edad"></div>
+        <div class="stats" id="stats"></div>
+        <p class="ticker muted">Y contando: <b id="segs">0</b> segundos ⏱️</p>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 4px;font-size:1.15rem">Tu vida en semanas</h2>
+        <p class="small muted" style="margin:0">Cada cuadrito es una semana de una vida de 80 años. Cada fila, un año.</p>
+        <canvas id="weeks" width="520" height="800" role="img" aria-label="Cuadrícula de semanas vividas"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--accent)"></i>Vividas</span>
+          <span><i style="background:var(--line)"></i>Por vivir</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 6px;font-size:1.15rem">Compártelo</h2>
+        <p class="small muted" style="margin:0 0 10px">Crea una imagen para tus historias de Instagram, Facebook, TikTok o WhatsApp.</p>
+        <button class="btn alt block" id="story" type="button">📲 Crear imagen para historias</button>
+        <div class="share" data-share data-manual="1" id="share"></div>
+      </div>
+    </section>
+
+    <div id="raiz-sell"></div>
+
+    <section class="content">
+      <h2>¿Cómo se calcula?</h2>
+      <p>Contamos los días exactos desde tu fecha de nacimiento hasta hoy. A partir de ahí estimamos el resto con promedios:
+        un corazón adulto late unas <b>70 veces por minuto</b>, respiramos unas <b>16 veces por minuto</b>, dormimos cerca de
+        <b>un tercio</b> del día, una luna llena se repite cada <b>29,53 días</b> y la Tierra recorre unos <b>940 millones de km</b>
+        por año alrededor del Sol.</p>
+      <p>Son aproximaciones divertidas, no datos médicos: tu número real depende de tu edad, tu actividad y tu salud.</p>
+
+      <h2>Preguntas frecuentes</h2>
+      <details><summary>¿Guardan mi fecha de nacimiento?</summary>
+        <p>No. El cálculo ocurre en tu navegador y la fecha nunca sale de tu dispositivo.</p></details>
+      <details><summary>¿Por qué 80 años en la cuadrícula?</summary>
+        <p>Es una referencia redonda cercana a la esperanza de vida en Latinoamérica. Es solo una forma visual de ver el tiempo.</p></details>
+      <details><summary>¿Qué pasa si nací un 29 de febrero?</summary>
+        <p>En los años no bisiestos tomamos el 1 de marzo como tu próximo cumpleaños.</p></details>
+    </section>
+  </main>
+
+
+  <script src="../assets/config.js"></script>
+  <script src="../assets/raiz.js"></script>
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => Math.round(n).toLocaleString("es", { useGrouping: "always" });
+    const DAY = 86400000;
+    const DIAS_SEMANA = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    let birth = null, data = null, timer = null;
+
+    const input = $("nac");
+    const today = new Date();
+    input.max = today.toISOString().slice(0, 10);
+    input.min = (today.getFullYear() - 120) + "-01-01";
+
+    function utc(d) { return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+    function calc(b) {
+      const now = new Date();
+      // Edad exacta en años, meses y días
+      let y = now.getFullYear() - b.getFullYear();
+      let m = now.getMonth() - b.getMonth();
+      let d = now.getDate() - b.getDate();
+      if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+      if (m < 0) { y--; m += 12; }
+
+      const dias = Math.round((utc(now) - utc(b)) / DAY);
+      const minutos = (now - b) / 60000;
+      const anios = dias / 365.25;
+
+      let prox = new Date(now.getFullYear(), b.getMonth(), b.getDate());
+      if (utc(prox) < utc(now)) prox = new Date(now.getFullYear() + 1, b.getMonth(), b.getDate());
+      const faltan = Math.round((utc(prox) - utc(now)) / DAY);
+
+      return {
+        y, m, d, dias, anios, faltan,
+        semanas: dias / 7,
+        horas: dias * 24,
+        latidos: minutos * 70,
+        respiraciones: minutos * 16,
+        dormido: anios / 3,
+        lunas: dias / 29.53,
+        km: anios * 940e6,
+        cumples: y,
+        diaSemana: DIAS_SEMANA[b.getDay()],
+      };
+    }
+
+    function render() {
+      data = calc(birth);
+      $("dias").textContent = fmt(data.dias);
+      const partes = [`<b>${data.y}</b> años`, `<b>${data.m}</b> ${data.m === 1 ? "mes" : "meses"}`, `<b>${data.d}</b> ${data.d === 1 ? "día" : "días"}`];
+      $("edad").innerHTML = `Tienes ${partes.join(", ")}. Naciste un <b>${data.diaSemana}</b>.`;
+      const stats = [
+        [fmt(data.semanas), "semanas"],
+        [fmt(data.horas), "horas"],
+        ["~" + fmt(data.latidos / 1e6) + " M", "latidos del corazón"],
+        ["~" + fmt(data.respiraciones / 1e6) + " M", "respiraciones"],
+        ["~" + fmt(data.dormido), "años durmiendo"],
+        [fmt(data.lunas), "lunas llenas"],
+        ["~" + fmt(data.km / 1e9) + " mil M", "km viajados alrededor del Sol"],
+        [fmt(data.cumples), "vueltas al Sol (cumpleaños)"],
+        [data.faltan === 0 ? "¡HOY! 🎂" : fmt(data.faltan), data.faltan === 0 ? "es tu cumpleaños" : "días para tu cumpleaños"],
+      ];
+      $("stats").innerHTML = stats.map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+      drawWeeks();
+      $("res").classList.remove("hidden");
+      clearInterval(timer);
+      const tick = () => { $("segs").textContent = fmt((Date.now() - birth) / 1000); };
+      tick();
+      timer = setInterval(tick, 1000);
+    }
+
+    function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+    function drawWeeks() {
+      const cv = $("weeks"), ctx = cv.getContext("2d");
+      const cols = 52, rows = 80, gap = 2;
+      const cell = Math.floor((cv.width - gap * (cols - 1)) / cols);
+      cv.height = rows * (cell + gap);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const vividas = Math.floor(data.semanas);
+      const on = cssVar("--accent"), off = cssVar("--line");
+      for (let i = 0; i < cols * rows; i++) {
+        ctx.fillStyle = i < vividas ? on : off;
+        ctx.fillRect((i % cols) * (cell + gap), Math.floor(i / cols) * (cell + gap), cell, cell);
+      }
+    }
+
+    function shareText() {
+      return data
+        ? `Llevo ${fmt(data.dias)} días vividos y mi corazón latió unas ${fmt(data.latidos / 1e6)} millones de veces 🫀 ¿Y tú?`
+        : "¿Cuántos días has vivido? Descúbrelo gratis 👇";
+    }
+
+    // Imagen vertical 1080x1920 para historias
+    function storyImage() {
+      const W = 1080, H = 1920;
+      const cv = document.createElement("canvas");
+      cv.width = W; cv.height = H;
+      const c = cv.getContext("2d");
+      const F = "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+      c.fillStyle = "#2f5d3a"; c.fillRect(0, 0, W, H);
+      c.fillStyle = "#c8643b"; c.fillRect(0, H - 360, W, 360);
+      c.textAlign = "center"; c.fillStyle = "#f6f1e7";
+
+      c.font = `600 54px ${F}`; c.fillText("MI VIDA EN NÚMEROS", W / 2, 230);
+      c.font = `800 200px ${F}`; c.fillText(fmt(data.dias), W / 2, 500);
+      c.font = `500 60px ${F}`; c.fillText("días vividos", W / 2, 590);
+
+      const lines = [
+        ["🫀", `${fmt(data.latidos / 1e6)} millones de latidos`],
+        ["🌬️", `${fmt(data.respiraciones / 1e6)} millones de respiraciones`],
+        ["🌕", `${fmt(data.lunas)} lunas llenas`],
+        ["😴", `${fmt(data.dormido)} años durmiendo`],
+        ["🌍", `${fmt(data.km / 1e9)} mil millones de km`],
+      ];
+      c.font = `500 52px ${F}`;
+      lines.forEach(([e, t], i) => c.fillText(`${e}  ${t}`, W / 2, 790 + i * 120));
+
+      c.fillStyle = "#ffffff";
+      c.font = `700 58px ${F}`; c.fillText("¿Y tú? Calcúlalo gratis 👇", W / 2, H - 240);
+      const C = window.Raiz.config;
+      c.font = `500 46px ${F}`;
+      c.fillText((C.dominio || location.host).replace(/^https?:\/\//, ""), W / 2, H - 150);
+      if (C.usuario) c.fillText(C.usuario, W / 2, H - 80);
+      return new Promise((r) => cv.toBlob(r, "image/png"));
+    }
+
+    $("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      $("err").textContent = "";
+      const v = input.value;
+      if (!v) { $("err").textContent = "Elige tu fecha de nacimiento."; return; }
+      const [yy, mm, dd] = v.split("-").map(Number);
+      const b = new Date(yy, mm - 1, dd);
+      const now = new Date();
+      if (b > now) { $("err").textContent = "Esa fecha todavía no llegó 😉"; return; }
+      if (now.getFullYear() - yy > 120) { $("err").textContent = "Revisa el año: parece demasiado antiguo."; return; }
+      birth = b;
+      render();
+      $("res").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    $("story").addEventListener("click", async () => {
+      if (!data) return;
+      const blob = await storyImage();
+      window.Raiz.shareFile(blob, "mi-vida-en-numeros.png", shareText());
+    });
+
+    window.Raiz.renderShare($("share"), shareText);
+  })();
+  </script>
+
+<!-- ER-CREDIT:START · Pie de Estudio Raíz (no editar a mano: se regenera igual en todos los proyectos) -->
+<style>
+.er-credit{all:initial;display:block;box-sizing:border-box;width:100%;margin:0;padding:18px 16px 22px;background:#0B283D;color:#DCE3E8;font:400 13px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;position:relative;z-index:1}
+.er-credit *{box-sizing:border-box}
+.er-credit a{color:#F9F6F1;text-decoration:none}
+.er-credit a:hover,.er-credit a:focus-visible{text-decoration:underline;text-underline-offset:2px}
+.er-credit__brand{display:inline-flex;align-items:center;gap:10px;font-size:14px}
+.er-credit__brand img{width:30px;height:30px;border-radius:7px;display:block}
+.er-credit__brand strong{font-weight:600;letter-spacing:.2px}
+.er-credit__links{margin:8px 0 0;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px}
+.er-credit__legal{margin:8px 0 0;font-size:11.5px;color:#9FB0BC}
+</style>
+<footer class="er-credit" aria-label="Créditos">
+  <a class="er-credit__brand" href="https://estudio-raiz.vercel.app" target="_blank" rel="noopener">
+    <img src="../assets/estudio-raiz.svg" alt="" width="30" height="30">
+    <span>Desarrollado por <strong>Estudio Raíz</strong></span>
+  </a>
+  <p class="er-credit__links">
+    <a href="https://wa.me/5492216823580" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="mailto:daniel.franco.dib@gmail.com">Email</a>
+    <a href="https://estudio-raiz.vercel.app/privacidad" target="_blank" rel="noopener">Privacidad</a>
+    <a href="https://estudio-raiz.vercel.app/terminos" target="_blank" rel="noopener">Términos</a>
+  </p>
+  <p class="er-credit__legal">© 2026 Estudio Raíz · Marca en trámite ante el INPI (Acta N.º 4780707) · San Miguel de Tucumán, Argentina</p>
+</footer>
+<!-- ER-CREDIT:END -->
+</body>
+</html>

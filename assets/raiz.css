@@ -1,0 +1,145 @@
+/* ============================================================
+   Estudio Raíz — estilos base compartidos por TODAS las páginas
+   No modificar por página: los estilos propios van en un <style>
+   dentro de la página.
+   ============================================================ */
+:root {
+  --bg: #f6f1e7;
+  --surface: #fffaf1;
+  --ink: #1f2a1f;
+  --muted: #5d6b5a;
+  --line: #e2d9c6;
+  --brand: #2f5d3a;        /* verde raíz */
+  --brand-ink: #ffffff;
+  --accent: #c8643b;       /* terracota */
+  --accent-soft: #f6dccd;
+  --radius: 16px;
+  --shadow: 0 6px 24px rgba(31, 42, 31, .08);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141a14;
+    --surface: #1c241c;
+    --ink: #eef2e8;
+    --muted: #a7b3a2;
+    --line: #2d3a2d;
+    --brand: #7fbf8c;
+    --brand-ink: #10180f;
+    --accent: #ec8a5e;
+    --accent-soft: #3a261d;
+    --shadow: 0 6px 24px rgba(0, 0, 0, .35);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+}
+img, canvas { max-width: 100%; }
+a { color: var(--brand); }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+/* Cabecera */
+.raiz-header { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.raiz-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.raiz-logo { font-weight: 800; text-decoration: none; color: var(--ink); letter-spacing: -.02em; }
+.raiz-logo span { color: var(--accent); }
+.raiz-header nav a { color: var(--muted); text-decoration: none; font-size: .95rem; }
+
+/* Títulos */
+.hero { padding: 32px 0 8px; }
+.hero h1 { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.1; margin: 0 0 8px; letter-spacing: -.03em; }
+.hero p { color: var(--muted); margin: 0; font-size: 1.05rem; }
+
+/* Tarjetas y formularios */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+label { display: block; font-weight: 600; margin-bottom: 6px; }
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+}
+input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font: inherit; font-weight: 700;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  background: var(--brand);
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.alt { background: var(--accent); color: #fff; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.block { width: 100%; }
+
+/* Barra de compartir */
+.share { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.share .btn { padding: 10px 14px; font-size: .92rem; }
+
+/* Bloque "síguenos" */
+.follow { text-align: center; }
+.follow h2 { margin: 0 0 4px; font-size: 1.2rem; }
+.follow p { margin: 0 0 12px; color: var(--muted); }
+.social { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.social a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--bg);
+  text-decoration: none; color: var(--ink); font-weight: 600; font-size: .92rem;
+}
+.social a:hover { border-color: var(--accent); }
+.social svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* Bloque de venta a negocios */
+.sell { background: var(--accent-soft); border-color: transparent; }
+.sell h2 { margin: 0 0 6px; font-size: 1.15rem; }
+.sell p { margin: 0 0 12px; }
+
+/* Espacio publicitario (solo visible si hay AdSense configurado) */
+.ad-slot { display: none; margin: 20px 0; min-height: 100px; }
+.ads-on .ad-slot { display: block; }
+
+/* Pie */
+.raiz-footer { border-top: 1px solid var(--line); margin-top: 40px; padding: 24px 0 40px; color: var(--muted); font-size: .9rem; text-align: center; }
+.raiz-footer a { color: var(--muted); }
+
+/* Aviso flotante */
+.toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(120%);
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px;
+  font-weight: 600; transition: transform .25s ease; z-index: 50; max-width: calc(100% - 32px);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

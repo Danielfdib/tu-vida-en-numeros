@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudio Raíz | Herramientas simples y gratis para el día a día</title>
+  <meta name="description" content="Calculadoras, tests y utilidades gratis para el día a día. Sin registro, sin instalar nada. Una herramienta nueva cada semana.">
+  <meta property="og:title" content="Estudio Raíz — herramientas simples y gratis">
+  <meta property="og:description" content="Calculadoras, tests y utilidades gratis para el día a día.">
+  <meta name="theme-color" content="#2f5d3a">
+  <link rel="stylesheet" href="assets/raiz.css">
+  <style>
+    .tools { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 20px 0; }
+    @media (min-width: 560px) { .tools { grid-template-columns: 1fr 1fr; } }
+    .tool { display: block; text-decoration: none; color: var(--ink); margin: 0; }
+    .tool:hover { border-color: var(--accent); }
+    .tool .ico { font-size: 1.8rem; }
+    .tool h2 { font-size: 1.1rem; margin: 6px 0 4px; }
+    .tool p { margin: 0; color: var(--muted); font-size: .95rem; }
+    .tool.soon { opacity: .55; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <header class="raiz-header">
+    <div class="wrap"><a class="raiz-logo" href="./">Estudio <span>Raíz</span></a></div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Herramientas simples, gratis, para todos los días</h1>
+      <p>Sin registro y sin instalar nada. Subimos una nueva cada semana.</p>
+    </section>
+
+    <!-- HERRAMIENTAS: agrega una tarjeta por cada página nueva (la más nueva primero) -->
+    <section class="tools">
+      <a class="card tool" href="tu-vida-en-numeros/">
+        <div class="ico">⏳</div>
+        <h2>Tu vida en números</h2>
+        <p>¿Cuántos días has vivido? ¿Cuántas veces latió tu corazón?</p>
+      </a>
+      <div class="card tool soon" aria-disabled="true">
+        <div class="ico">🍕</div>
+        <h2>Dividir la cuenta</h2>
+        <p>Muy pronto.</p>
+      </div>
+    </section>
+
+    <div id="raiz-follow"></div>
+    <div id="raiz-sell"></div>
+  </main>
+
+  <footer id="raiz-footer"></footer>
+  <script src="assets/config.js"></script>
+  <script src="assets/raiz.js"></script>
+</body>
+</html>
