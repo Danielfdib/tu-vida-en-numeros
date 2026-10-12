@@ -6,7 +6,7 @@
 window.RAIZ_CONFIG = {
   marca: "Estudio Raíz",
   usuario: "",                           // tu @ en redes (vacío hasta abrir las cuentas)
-  dominio: "https://tu-vida-en-numeros.vercel.app", // cámbialo cuando compres tu dominio propio
+  dominio: "https://mi-vida-en-numeros.vercel.app", // cámbialo cuando compres tu dominio propio
 
   // Redes: vacías hasta que existan las cuentas reales (vacío = no se muestran).
   redes: {

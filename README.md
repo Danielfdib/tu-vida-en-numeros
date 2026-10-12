@@ -2,7 +2,7 @@
 
 Herramienta web gratuita: ponés tu fecha de nacimiento y descubrís cuántos días, horas, latidos y lunas llenas llevás vividos, tu vida en semanas y una imagen lista para compartir en historias.
 
-**Probala:** https://tu-vida-en-numeros.vercel.app
+**Probala:** https://mi-vida-en-numeros.vercel.app
 
 - HTML, CSS y JavaScript puro, sin dependencias ni compilación.
 - **Privacidad:** el cálculo ocurre en el navegador; la fecha nunca sale del dispositivo.
